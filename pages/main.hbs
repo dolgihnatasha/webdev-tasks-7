@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Хрюногочи</title>
+    <meta name="viewport" content="width=device-width">
+    <style type="text/css">
+        body{
+            margin: 0;
+            overflow: hidden;
+            height: 100%;
+            flex-direction: row;
+            background-color: rgb(145, 255, 149);
+
+        }
+        .pig-container{
+            display: flex;
+        }
+        .peppaThePig {
+            margin: auto;
+            /*width: 100%;*/
+        }
+        .eye .open.sleep{
+            /*display: none;*/
+        }
+        .params {
+            position: absolute;
+            max-width: 35%;
+        }
+    </style>
+</head>
+<body>
+<div class="params">
+    <button type="button" class="reset">Сбросить!</button>
+    <div>Сытость:<span class="food"></span></div>
+    <div>Бодрость:<span class="energy"></span></div>
+    <div>Радость:<span class="happiness"></span></div>
+    <button type="button" class="feed">Кормить!</button>
+    <div class="speechLog">Разговор:<br></div>
+</div>
+<div class="pig-container">
+    <div class="peppaThePig">
+        {{> peppa }}
+    </div>
+</div>
+</body>
+<script src="/index.js"></script>
+</html>

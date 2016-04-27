@@ -1,0 +1,19 @@
+{
+  "name": "notes",
+  "version": "1.0.0",
+  "main": "app.js",
+  "scripts": {
+    "deploy": "git push heroku master",
+    "start": "node app.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "1.15.0",
+    "express": "4.13.4",
+    "file-loader": "^0.8.5",
+    "hbs": "4.0.0"
+  },
+  "engines": {
+    "node": "4.4.0"
+  }
+}
