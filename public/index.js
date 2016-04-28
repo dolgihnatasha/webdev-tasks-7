@@ -1,0 +1,189 @@
+var params = {
+    energy: 0,
+    food: 0,
+    happiness: 0
+};
+var awake = true;
+
+var SpeechRecognition = window.SpeechRecognition ||
+    window.webkitSpeechRecognition || null;
+var recognizer;
+var peppa = document.getElementsByClassName('peppaThePig').item(0);
+var feedBtn = document.getElementsByClassName('feed').item(0);
+var resetBtn = document.getElementsByClassName('reset').item(0);
+var speechLog = document.getElementsByClassName('speechLog').item(0);
+var lifeID;
+
+initPeppa();
+
+function initPeppa() {
+    resetBtn.addEventListener('click', reset, false);
+    if (!navigator.getBattery) {
+        feedBtn.addEventListener('click', feed, false);
+    } else {
+        feedBtn.style.display = 'none';
+    }
+    loadData();
+    displayData();
+    lifeID = setInterval(lifeController, 1000);
+    loadSounds();
+    initSpeech();
+    initLightDetection();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    setInterval(saveData, 10000);
+}
+
+function reset() {
+    localStorage.removeItem('params');
+    loadData();
+    clearInterval(lifeID);
+    lifeID = setInterval(lifeController, 1000);
+}
+
+function initSpeech() {
+    if (SpeechRecognition) {
+        recognizer = new SpeechRecognition;
+        recognizer.lang = 'ru-RU';
+        recognizer.continuous = true;
+        recognizer.interimResults = true;
+        peppa.addEventListener('click', checkTalk);
+        recognizer.addEventListener('result', talkResults)
+    } else {
+        speechLog.style.display = 'none';
+    }
+}
+
+function lifeController() {
+    displayData();
+    hunger();
+    if (awake) {
+        if (params.energy > 0) {
+            params.energy--;
+        }
+    } else {
+        if (params.energy < 100) {
+            params.energy++;
+        }
+    }
+    params.happiness = Math.max(0, params.happiness - 1);
+    isAlive();
+    
+}
+
+function isAlive() {
+    if (params.happiness && params.food ||
+    params.happiness && params.energy ||
+    params.food && params.energy) {
+        clearInterval(lifeID);
+    }
+
+}
+
+function hunger() {
+    if (navigator.getBattery) {
+        navigator
+            .getBattery()
+            .then(workBattery);
+        return true;
+    } else {
+        if (params.food > 0) {
+            params.food--;
+        }
+        return false;
+    }
+}
+function workBattery(battery) {
+    if (battery.charging) {
+        if (params.food < 100) {
+            params.food++;
+        }
+    } else {
+        if (params.food > 0) {
+            params.food--;
+        }
+    }
+}
+
+function feed() {
+    console.log('here');
+    params.food = Math.min(100, params.food + 10);
+}
+
+function checkTalk() {
+    if (params.happiness < 100) {
+        recognizer.start();
+    }
+}
+
+function talkResults(event) {
+    for (var i = event.resultIndex; i < event.results.length; i++) {
+        if (event.results[i].isFinal) {
+            var res = event.results[i][0].transcript;
+            speechLog.innerHTML += res + '<br>';
+            if (params.happiness < 100) {
+                params.happiness = Math.min(100, params.happiness + res.length);
+            }
+        }
+    }
+    if (params.happiness == 100) {
+        recognizer.stop();
+    }
+}
+
+function loadSounds() {
+    //TODO
+}
+
+function handleVisibilityChange() {
+    awake = (document.hidden) ? false : true;
+}
+
+
+function initLightDetection() {
+    if ('ondevicelight' in window) {
+        window.addEventListener('devicelight', isDarkOutside);
+    }
+}
+
+function isDarkOutside(e) {
+    awake = e.value > 10;
+}
+
+function saveData() {
+    if (checkLocalStorage()) {
+        localStorage.setItem('params', JSON.stringify(params));
+        console.log('saved');
+    }
+}
+
+function loadData() {
+    if (checkLocalStorage() && hasStoredData()) {
+        params = JSON.parse(localStorage.getItem('params'));
+    } else {
+        params = {
+            energy: 100,
+            food: 100,
+            happiness: 100
+        };
+    }
+}
+
+function displayData() {
+    document.getElementsByClassName('food').item(0).innerText = params.food;
+    document.getElementsByClassName('energy').item(0).innerText = params.energy;
+    document.getElementsByClassName('happiness').item(0).innerText = params.happiness;
+}
+
+function hasStoredData() {
+    return !!localStorage.getItem('params');
+}
+
+function checkLocalStorage() {
+    try {
+        localStorage.setItem('key', 'value');
+        localStorage.removeItem('key');
+        return true;
+    } catch (error) {
+        return false;
+    }
+}
