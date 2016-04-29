@@ -6,13 +6,13 @@ const app = express();
 const hbs = require('hbs');
 const bodyParser = require('body-parser');
 
-const viewsDir = path.join(__dirname, './pages');
-const publicDir = path.join(__dirname, './public');
+const viewsDir = path.join(__dirname, '.');
+const publicDir = path.join(__dirname, '.');
 
 app.set('views', viewsDir);
 app.set('view engine', 'hbs');
 app.use(express.static(publicDir));
-hbs.registerPartials(path.join(__dirname, 'blocks'));
+hbs.registerPartials(path.join(__dirname, '.'));
 
 app.set('port', (process.env.PORT || 5000));
 

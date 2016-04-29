@@ -4,9 +4,7 @@ var params = {
     happiness: 0
 };
 var awake = true;
-
-var SpeechRecognition = window.SpeechRecognition ||
-    window.webkitSpeechRecognition || null;
+var speed = 3;
 var recognizer;
 var peppa = document.getElementsByClassName('peppaThePig').item(0);
 var feedBtn = document.getElementsByClassName('feed').item(0);
@@ -17,20 +15,44 @@ var lifeID;
 initPeppa();
 
 function initPeppa() {
+    loadData();
+    displayData();
+    lifeID = setInterval(lifeController, 1000);
+
+    loadSounds();
+    loadNotifications();
+    initSpeech();
+    initLightDetection();
+    initFeed();
+    document.addEventListener("visibilitychange", handleVisibilityChange);
     resetBtn.addEventListener('click', reset, false);
+    
+
+    setInterval(saveData, 10000);
+}
+
+function loadNotifications() {
+    var Notification = window.Notification ||
+        window.webkitNotification || null;
+    if (Notification) {
+        Notification.requestPermission(
+            function () {
+                setInterval(notify, 60 * 1000);
+            }
+        );
+    }
+}
+
+function initFeed() {
     if (!navigator.getBattery) {
         feedBtn.addEventListener('click', feed, false);
     } else {
         feedBtn.style.display = 'none';
     }
-    loadData();
-    displayData();
-    lifeID = setInterval(lifeController, 1000);
-    loadSounds();
-    initSpeech();
-    initLightDetection();
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    setInterval(saveData, 10000);
+}
+
+function notify() {
+    new Notification('Heyy!', {body: 'Did you forget about me?'});
 }
 
 function reset() {
@@ -41,6 +63,8 @@ function reset() {
 }
 
 function initSpeech() {
+    var SpeechRecognition = window.SpeechRecognition ||
+        window.webkitSpeechRecognition || null;
     if (SpeechRecognition) {
         recognizer = new SpeechRecognition;
         recognizer.lang = 'ru-RU';
@@ -62,7 +86,7 @@ function lifeController() {
         }
     } else {
         if (params.energy < 100) {
-            params.energy++;
+            params.energy += speed;
         }
     }
     params.happiness = Math.max(0, params.happiness - 1);
@@ -71,9 +95,9 @@ function lifeController() {
 }
 
 function isAlive() {
-    if (params.happiness && params.food ||
-    params.happiness && params.energy ||
-    params.food && params.energy) {
+    if (params.happiness == 0 && params.food == 0 ||
+    params.happiness == 0 && params.energy == 0 ||
+    params.food == 0 && params.energy == 0) {
         clearInterval(lifeID);
     }
 
@@ -95,7 +119,7 @@ function hunger() {
 function workBattery(battery) {
     if (battery.charging) {
         if (params.food < 100) {
-            params.food++;
+            params.food += speed;
         }
     } else {
         if (params.food > 0) {

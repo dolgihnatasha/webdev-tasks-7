@@ -1,8 +1,11 @@
 'use strict';
 
-const pages = require('./controllers/pages');
+var index = (req, res) => {
+    res.render('main');
+};
+var error404 = (req, res) => res.sendStatus(404);
 
 module.exports = function (app) {
-    app.get('/', pages.index);
-    app.all('*', pages.error404);
+    app.get('/', index);
+    app.all('*', error404);
 };
