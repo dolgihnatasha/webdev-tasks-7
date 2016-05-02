@@ -16,22 +16,21 @@ initPeppa();
 
 function initPeppa() {
     loadData();
+    setInterval(saveData, 10000);
     displayData();
     lifeID = setInterval(lifeController, 1000);
 
-    loadSounds();
-    loadNotifications();
+    initSounds();
+    initNotifications();
     initSpeech();
     initLightDetection();
     initFeed();
+
     document.addEventListener("visibilitychange", handleVisibilityChange);
     resetBtn.addEventListener('click', reset, false);
-    
-
-    setInterval(saveData, 10000);
 }
 
-function loadNotifications() {
+function initNotifications() {
     var Notification = window.Notification ||
         window.webkitNotification || null;
     if (Notification) {
@@ -86,7 +85,7 @@ function lifeController() {
         }
     } else {
         if (params.energy < 100) {
-            params.energy += speed;
+            params.energy = Math.max(100, params.energy + speed);
         }
     }
     params.happiness = Math.max(0, params.happiness - 1);
@@ -99,8 +98,12 @@ function isAlive() {
     params.happiness == 0 && params.energy == 0 ||
     params.food == 0 && params.energy == 0) {
         clearInterval(lifeID);
+        animateDeath();
     }
+}
 
+function animateDeath() {
+    document.getElementsByClassName();
 }
 
 function hunger() {
@@ -119,7 +122,7 @@ function hunger() {
 function workBattery(battery) {
     if (battery.charging) {
         if (params.food < 100) {
-            params.food += speed;
+            params.food = Math.max(100, params.food + speed);
         }
     } else {
         if (params.food > 0) {
@@ -154,7 +157,7 @@ function talkResults(event) {
     }
 }
 
-function loadSounds() {
+function initSounds() {
     //TODO
 }
 
