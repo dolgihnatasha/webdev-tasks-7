@@ -1,21 +1,23 @@
-body{
+body {
     margin: 0;
     overflow: hidden;
     height: 100%;
     flex-direction: row;
     background-color: rgb(145, 255, 149);
-
 }
-.pig-container{
+
+.pig-container {
     display: flex;
 }
+
 .peppaThePig {
     margin: auto;
-    /*width: 100%;*/
 }
-.eye .open.sleep{
-    /*display: none;*/
+
+.eye .open.sleep {
+    display: none;
 }
+
 .params {
     position: absolute;
     max-width: 35%;

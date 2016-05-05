@@ -13,7 +13,29 @@
     <div>Бодрость:<span class="energy"></span></div>
     <div>Радость:<span class="happiness"></span></div>
     <button type="button" class="feed">Кормить!</button>
+    <div>
+        <label for="volume">громкость звуков:</label><br>
+        <input type="range" value="50" id="volume">
+    </div>
     <div class="speechLog">Разговор:<br></div>
+</div>
+<div class="sound">
+    <audio id="sound0">
+        <source src="./Pig/pig1.mp3" type="audio/mpeg">
+        Your browser does not support audio tag:(
+    </audio>
+    <audio id="sound1">
+        <source src="./Pig/pig2.mp3" type="audio/mpeg">
+        Your browser does not support audio tag:(
+    </audio>
+    <audio id="sound2">
+        <source src="./Pig/pig3.mp3" type="audio/mpeg">
+        Your browser does not support audio tag:(
+    </audio>
+    <audio id="death">
+        <source src="./Pig/pigdeath.mp3" type="audio/mpeg">
+        Your browser does not support audio tag:(
+    </audio>
 </div>
 <div class="pig-container">
     <div class="peppaThePig">
@@ -21,5 +43,6 @@
     </div>
 </div>
 </body>
+<script src="/lib.js"></script>
 <script src="/index.js"></script>
 </html>
