@@ -1,6 +1,3 @@
-
-
-
 function checkLocalStorage() {
     try {
         localStorage.setItem('key', 'value');
