@@ -41,10 +41,11 @@ class Energy extends SomeValue{
 }
 
 class Happiness extends SomeValue {
-    constructor(val, obj, speechLog) {
+    constructor(val, obj, speechLog, soundMaker) {
         super(val);
         this.starter = obj;
         this.speechLog = speechLog;
+        this.soundMaker = soundMaker;
         this.initSpeech();
 
     }
@@ -72,6 +73,7 @@ class Happiness extends SomeValue {
         if (this.val < 100 && !this.listening) {
             this.recognizer.start();
             this.listening = true;
+            this.soundMaker.mute()
         }
     }
     talkResults(event) {
@@ -80,16 +82,18 @@ class Happiness extends SomeValue {
                 var res = event.results[i][0].transcript;
                 this.speechLog.innerHTML += res + '<br>';
                 this.inc(res.length);
+                
+                if (this.val === 100) {
+                    this.stopListening();
+                }
             }
-        }
-        if (this.happiness == 100) {
-            this.stopListening();
         }
     }
     stopListening() {
         if (this.listening) {
             this.listening = false;
             this.recognizer.stop();
+            this.soundMaker.unmute();
         }
     }
 }
@@ -114,7 +118,17 @@ class Food extends SomeValue {
         return this._canEat;
     }
     isEating() {
-        this.eating = this.battery.charging;
-        return this.eating;
+        if (this.battery) {
+            this.eating = this.battery.charging;
+            return this.eating;
+        } else {
+            this.initBatteryCheck();
+            return false
+        }
     }
 }
+
+
+module.exports.Happiness = Happiness;
+module.exports.Energy = Energy;
+module.exports.Food = Food;

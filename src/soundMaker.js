@@ -5,24 +5,21 @@ class SoundMaker {
         this.initSounds();
     }
     initSounds() {
-        this.volume.max = 1;
-        this.volume.step = 0.1;
-        this.volume.defaultValue = 0.5;
         this.changeVolume();
-        this.volume.addEventListener('change', 
+        this.volume.on('change',
             (event) => {this.changeVolume(event)});
         this.soundID = this.start();
     }
     changeVolume() {
         for (var sound in this.sounds) {
             if (this.sounds.hasOwnProperty(sound)) {
-                this.sounds[sound].volume = this.volume.value;
+                this.sounds[sound].volume = this.volume.getValue();
             }
         }
     }
-    makeSound(death, ignoreHidden) {
+    makeSound(death) {
         if (!death) {
-            if (!this.listening && (!document.hidden || ignoreHidden)) {
+            if (!this.listening && !this.muted) {
                 this.sounds[Math.floor(Math.random() * 3)].play();
             }
         } else {
@@ -36,4 +33,12 @@ class SoundMaker {
         this.soundID = setInterval(() => {this.makeSound()},
             (Math.floor(Math.random() * 10) + 5) * 1000);
     }
+    mute() {
+        this.muted = true;
+    }
+    unmute() {
+        this.muted = false;
+    }
 }
+
+module.exports.SoundMaker = SoundMaker;

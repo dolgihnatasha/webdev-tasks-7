@@ -1,24 +1,49 @@
+html {
+    height: 100%;
+}
+
 body {
     margin: 0;
-    overflow: hidden;
     height: 100%;
+}
+
+.container-fluid {
+    display: flex;
     flex-direction: row;
-    background-color: rgb(145, 255, 149);
+    height: 100%;
+    padding: .5rem;
 }
 
 .pig-container {
     display: flex;
+    height: 100%;
+    width: 100%;
+    margin: .25rem;
+    border-radius: .25rem;
+    background-color: rgb(145, 255, 149);
 }
 
 .peppaThePig {
+    justify-self: center;
     margin: auto;
+    width: 400px;
+    height: 500px;
 }
 
-.eye .open.sleep {
-    display: none;
+.btn {
+    width: 100%;
 }
 
 .params {
-    position: absolute;
-    max-width: 35%;
+    width: 100%;
+    max-width: 300px;
+    margin: .25rem;
+}
+
+li.speechLog {
+    height: 100%;
+}
+
+div.speechLog {
+    overflow-y: scroll
 }

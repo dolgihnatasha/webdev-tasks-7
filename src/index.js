@@ -1,9 +1,17 @@
+var {Happiness, Energy, Food} = require('./objects');
+var SoundMaker = require('./soundMaker').SoundMaker;
+var {checkLocalStorage, hasStoredData, notify} = require('./lib');
+var animations = require('./animations');
+
 class Peppa {
-    constructor(speed) {
+    constructor(lifeSpeed, speed) {
+        this.initAnimations();
         this.speed = speed;
+        this.lifeSpeed = lifeSpeed;
         this.initPeppa();
         this.loadData();
         this.displayData();
+        
     }
     loadData() {
         if (checkLocalStorage() && hasStoredData()) {
@@ -24,9 +32,9 @@ class Peppa {
         }
     }
     displayData() {
-        document.getElementsByClassName('food').item(0).innerText = this.food.val;
-        document.getElementsByClassName('energy').item(0).innerText = this.energy.val;
-        document.getElementsByClassName('happiness').item(0).innerText = this.happiness.val;
+        document.getElementsByClassName('food').item(0).value = this.food.val;
+        document.getElementsByClassName('energy').item(0).value = this.energy.val;
+        document.getElementsByClassName('happiness').item(0).value = this.happiness.val;
     }
     toString() {
         var this_ = this;
@@ -38,22 +46,28 @@ class Peppa {
         return JSON.stringify(obj);
     }
     initPeppa() {
-        let peppa = document.getElementsByClassName('peppaThePig').item(0);
-        let speechLog = document.getElementsByClassName('speechLog').item(0);
-        this.happiness = new Happiness(100, peppa, speechLog);
-        this.energy = new Energy(100);
-        this.food = new Food(100);
 
-        this.lifeID = setInterval(() => {this.lifeController();}, 2500);
-        setInterval(() => {this.saveData()}, 10000);
         let sounds = {
             0: document.getElementById('sound0'),
             1: document.getElementById('sound1'),
             2: document.getElementById('sound2'),
             death: document.getElementById('death')
         };
-        let volume = document.getElementById('volume');
+        let volume = new Slider('#volume', {
+            formatter: function(value) {
+                return 'Current value: ' + value;
+            }
+        });
         this.soundMaker = new SoundMaker(sounds, volume);
+        
+        let peppa = document.getElementsByClassName('peppaThePig').item(0);
+        let speechLog = document.querySelector('div.speechLog');
+        this.happiness = new Happiness(100, peppa, speechLog, this.soundMaker);
+        this.energy = new Energy(100);
+        this.food = new Food(100);
+
+        this.lifeID = setInterval(() => {this.lifeController();}, 1000 * this.lifeSpeed);
+        setInterval(() => {this.saveData()}, 10000);
 
         this.initNotifications();
 
@@ -65,6 +79,7 @@ class Peppa {
         if (!this.food.canEat) {
             feedBtn.addEventListener('click', () => {this.food.inc(15)});
         } else {
+            feedBtn.parentNode.style.display = 'none';
             feedBtn.style.display = 'none';
         }
     }
@@ -74,18 +89,15 @@ class Peppa {
             this.food.dec(1);
             this.happiness.dec(1);
             this.happiness.stopListening();
-            // console.log(1);
         } else if (this.food.isEating()) {
             this.energy.dec(1);
             this.food.inc(this.speed);
             this.happiness.dec(1);
             this.happiness.stopListening();
-            // console.log(2);
         } else {
             this.energy.dec(1);
             this.food.dec(1);
             this.happiness.dec(1);
-            // console.log(3);
         }
         if (!this.isAlive()) {
             this.die();
@@ -99,15 +111,17 @@ class Peppa {
     }
     die() {
         clearInterval(this.lifeID);
-        // this.animateDeath();
         this.soundMaker.makeSound(true);
-        this.soundMaker.stop();
+        // this.soundMaker.stop();
+        this.soundMaker.mute();
     }
     reset() {
         localStorage.removeItem('peppa');
+        this.happiness.stopListening();
+        this.soundMaker.unmute();
         this.loadData();
         clearInterval(this.lifeID);
-        this.lifeID = setInterval(() => {this.lifeController();}, 1000);
+        this.lifeID = setInterval(() => {this.lifeController();}, this.lifeSpeed * 1000);
     }
     initNotifications() {
         var Notification = window.Notification ||
@@ -125,18 +139,22 @@ class Peppa {
     }
     checkStats() {
         var message = "";
-        if (this.food <= 20) {
+        if (this.food <= 40) {
             message += ' I\'m hungry:(';
         }
-        if (this.happiness <= 20) {
+        if (this.happiness <= 70) {
             message += ' It\'s so boring to be alone:(';
         }
         if (message && this.isAlive()) {
             notify('Hey!', 'Did you forget about me?' + message);
-            this.soundMaker.makeSound(false, true);
+            this.soundMaker.makeSound(false);
         }
     }
-
+    initAnimations() {
+        this.bodyParts = animations.init();
+        animations.blink();
+    }
 }
 
-new Peppa(3);
+
+new Peppa(1, 3);

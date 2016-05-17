@@ -4,20 +4,58 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Хрюногочи</title>
     <meta name="viewport" content="width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="https://www.atlasestateagents.co.uk/javascript/tether.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/js/bootstrap.min.js"
+            integrity="sha384-vZ2WRJMwsjRMW/8U7i6PWi6AlO1L79snBrmgiDpgIWJ82z8eA5lenwvxbMV1PAh7"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/bootstrap-slider.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.2/css/bootstrap.min.css"
+          integrity="sha384-y3tfxAZXuh4HwSYylfB+J125MxIs6mR5FOHamPBG064zB+AFeWH94NdvaCBm8qnd" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-slider/7.0.2/css/bootstrap-slider.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg.js"></script>
     <link rel="stylesheet" href="/index.css">
 </head>
 <body>
-<div class="params">
-    <button type="button" class="reset">Сбросить!</button>
-    <div>Сытость:<span class="food"></span></div>
-    <div>Бодрость:<span class="energy"></span></div>
-    <div>Радость:<span class="happiness"></span></div>
-    <button type="button" class="feed">Кормить!</button>
-    <div>
-        <label for="volume">громкость звуков:</label><br>
-        <input type="range" value="50" id="volume">
+<div class="container-fluid">
+    <div class="params">
+
+        <ul class="list-group">
+            <li class="list-group-item">
+                <button type="button" class="reset btn-primary btn">Сбросить!</button>
+            </li>
+            <li class="list-group-item">
+                <h5 class="list-group-item-heading">Сытость:</h5>
+                <progress class="progress progress-success food" value="100" max="100"></progress>
+            </li>
+            <li class="list-group-item">
+                <h5 class="list-group-item-heading">Бодрость:</h5>
+                <progress class="progress progress-danger energy" value="100" max="100"></progress>
+            </li>
+            <li class="list-group-item">
+                <h5 class="list-group-item-heading">Радость:</h5>
+                <progress class="progress progress-warning happiness" value="100" max="100"></progress>
+            </li>
+            <li class="list-group-item">
+                <h5 class="list-group-item-heading"><label for="volume">Громкость звуков:</label></h5>
+                <input id="volume" data-slider-id='ex1Slider' type="text" data-slider-min="0"
+                       data-slider-max="1" data-slider-step="0.05" data-slider-value="0.7" data-value="0.7">
+            </li>
+            <li class="list-group-item">
+                <button type="button" class="feed btn btn-success">Кормить!</button>
+            </li>
+            <li class="list-group-item speechLog">
+                <h5 class="list-group-item-heading">Разговор:</h5>
+                <div class="speechLog list-group-item-text">
+                </div>
+            </li>
+        </ul>
     </div>
-    <div class="speechLog">Разговор:<br></div>
+    <div class="pig-container">
+        <div class="peppaThePig">
+            {{> peppa }}
+        </div>
+    </div>
 </div>
 <div class="sound">
     <audio id="sound0">
@@ -37,14 +75,7 @@
         Your browser does not support audio tag:(
     </audio>
 </div>
-<div class="pig-container">
-    <div class="peppaThePig">
-        {{> peppa }}
-    </div>
-</div>
 </body>
-<script src="/lib.js"></script>
-<script src="/soundMaker.js"></script>
-<script src="/objects.js"></script>
-<script src="/index.js"></script>
+
+<script src="/bundle.js"></script>
 </html>
