@@ -152,9 +152,10 @@ class Peppa {
     }
     initAnimations() {
         this.bodyParts = animations.init();
-        animations.blink();
+        // animations.blink();
     }
 }
 
-
-new Peppa(1, 3);
+window.onload = () => {
+    new Peppa(1, 3);
+};

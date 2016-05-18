@@ -13,6 +13,7 @@ function hasStoredData() {
 }
 
 function notify(title, message) {
+    console.log('notify');
     var notif = new Notification(title, {body: message});
     notif.onclick = () => {window.focus();}
 }

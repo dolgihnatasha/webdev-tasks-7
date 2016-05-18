@@ -198,12 +198,13 @@
 	    }
 	    initAnimations() {
 	        this.bodyParts = animations.init();
-	        animations.blink();
+	        // animations.blink();
 	    }
 	}
 
-
-	new Peppa(1, 3);
+	window.onload = () => {
+	    new Peppa(1, 3);
+	};
 
 
 /***/ },
@@ -413,6 +414,7 @@
 	}
 
 	function notify(title, message) {
+	    console.log('notify');
 	    var notif = new Notification(title, {body: message});
 	    notif.onclick = () => {window.focus();}
 	}
@@ -448,49 +450,49 @@
 	}
 
 	function closeEyes() {
-	    bodyParts.eyeCover.obj.transform(`T 0, 0`);
+	    bodyParts.leftEyeCover.obj.animate({
+	        transform: `s1,7 t0,2.1`
+	    }, 1000, () => {});
+	    bodyParts.rightEyeCover.obj.animate({
+	        transform: `s1,7 t0,2.1`
+	    }, 1000, () => {});
+	    // openEyes();
+	    // bodyParts.leftEyeCover.obj.transform(`t 0, 0`);
 	}
 
 	function openEyes() {
-	    bodyParts.eyeCover.obj.transform(`t 0, ${bodyParts.leftEyeOpened.cords.h}`);
+	    bodyParts.leftEyeCover.obj.animate({
+	        transform: `S1,1 t0,0`
+	    }, 1000, () => {});
+	    bodyParts.rightEyeCover.obj.animate({
+	        transform: `S1,1 t0,0`
+	    }, 1000, () => {});
 	}
 
 	function blink() {
-	    openEyes();
-	    bodyParts.eyeCover.obj.animate({
-	        transform: `t 0, ${bodyParts.leftEyeOpened.cords.h + 5}`
-	    }, 1000, () => {
-	        bodyParts.eyeCover.obj.animate({
-	            transform: `T 0, 0`
-	        }, 1000, blink)
-	    })
+	    closeEyes();
+	    setTimeout(openEyes, 1000)
 	}
 
 	function init() {
 	    bodyParts = {
+	        svg: {obj: Snap('#peppaThePig'), cords: Snap('#peppaThePig').getBBox()},
 	        rightHand: {obj: Snap('#rightHand'), cords: Snap('#rightHand').getBBox()},
 	        leftHand: {obj: Snap('#leftHand'), cords: Snap('#leftHand').getBBox()},
 	        leftEyeOpened: {obj: Snap('#leftEyeOpened'), cords: Snap('#leftEyeOpened').getBBox()},
 	        rightEyeOpened: {obj: Snap('#rightEyeOpened'), cords: Snap('#rightEyeOpened').getBBox()},
 	        leftEyeClosed: {obj: Snap('#leftEyeClosed'), cords: Snap('#leftEyeClosed').getBBox()},
+	        leftEye: {obj: Snap('#leftEye'), cords: Snap('#leftEye').getBBox()},
 	        rightEyeClosed: {obj: Snap('#rightEyeClosed'), cords: Snap('#rightEyeClosed').getBBox()},
 	        rightEyeCover: {obj: Snap('#rightCover'), cords: Snap('#rightCover').getBBox()},
-	        leftEyeCover: {obj: Snap('#leftCover'), cords: Snap('#leftCover').getBBox()},
-	        eyeCover: {obj: Snap('#eyeCover'), cords: Snap('#eyeCover').getBBox()}
-
+	        leftEyeCover: {obj: Snap('#leftCover'), cords: Snap('#leftCover').getBBox()}
 	    };
-	    // bodyParts.eyeCover.obj.attr({stroke: 'silver', 'strokeWidth': 40, fill: 'silver'})
-	    bodyParts.leftEyeOpened.obj.attr({
-	        mask: bodyParts.leftEyeCover.obj
-	    });
-	    bodyParts.rightEyeOpened.obj.attr({
-	        mask: bodyParts.rightEyeCover.obj
-	    });
 	    moveRightHand();
 	    moveLeftHand();
 	    // closeEyes();
-	    openEyes();
-	    // blink();
+	    // setTimeout(openEyes, 2000);
+	    // closeEyes();
+	    setInterval(blink, 3000)
 	    return bodyParts
 	}
 
